@@ -22,10 +22,10 @@
     protlev = Variable(index=[time,regions])
     protcost = Variable(index=[time,regions])
 
-    enter = Variable(index=[time,regions])
-    leave = Variable(index=[time,regions])
-    entercost = Variable(index=[time,regions])
-    leavecost = Variable(index=[time,regions])
+    enterSLR = Variable(index=[time,regions])
+    leaveSLR = Variable(index=[time,regions])
+    enterSLRcost = Variable(index=[time,regions])
+    leaveSLRcost = Variable(index=[time,regions])
 
     imigrate = Variable(index=[regions,regions])
 
@@ -205,25 +205,25 @@ function run_timestep(s::impactsealevelrise, t::Int)
             v.protcost[t, r] = v.protlev[t, r] * p.pc[r] * ds
 
             if v.landloss[t, r] < 0
-                v.leave[t, r] = 0
+                v.leaveSLR[t, r] = 0
             else
-                v.leave[t, r] = p.coastpd[r] * popdens * v.landloss[t, r]
+                v.leaveSLR[t, r] = p.coastpd[r] * popdens * v.landloss[t, r]
             end
 
-            v.leavecost[t, r] = p.emcst * ypc * v.leave[t, r] / 1000000000
+            v.leaveSLRcost[t, r] = p.emcst * ypc * v.leaveSLR[t, r] / 1000000000
         end
 
         for destination in d.regions
-            enter = 0.0
+            enterSLR = 0.0
             for source in d.regions
-                enter += v.leave[t, source] * v.imigrate[source, destination]
+                enterSLR += v.leaveSLR[t, source] * v.imigrate[source, destination]
             end
-            v.enter[t, destination] = enter
+            v.enterSLR[t, destination] = enterSLR
         end
 
         for r in d.regions
             ypc = p.income[t, r] / p.population[t, r] * 1000.0
-            v.entercost[t, r] = p.immcst * ypc * v.enter[t, r] / 1000000000
+            v.enterSLRcost[t, r] = p.immcst * ypc * v.enterSLR[t, r] / 1000000000
         end
     end
 end

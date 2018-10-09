@@ -16,14 +16,14 @@
     agcost = Parameter(index=[time,regions])
     drycost = Parameter(index=[time,regions])
     protcost = Parameter(index=[time,regions])
-    entercost = Parameter(index=[time,regions])
+    enterSLRcost = Parameter(index=[time,regions])
     hurrdam = Parameter(index=[time,regions])
     extratropicalstormsdam = Parameter(index=[time,regions])
     species = Parameter(index=[time,regions])
     deadcost = Parameter(index=[time,regions])
     morbcost = Parameter(index=[time,regions])
     wetcost = Parameter(index=[time,regions])
-    leavecost = Parameter(index=[time,regions])
+    leaveSLRcost = Parameter(index=[time,regions])
 
     # Other economic losses
     eloss_other = Parameter(index=[time,regions])
@@ -52,7 +52,7 @@ function run_timestep(s::impactaggregation, t::Int)
                 p.agcost[t, r] +
                 p.drycost[t, r] +
                 p.protcost[t, r] +
-                p.entercost[t, r] +
+                p.enterSLRcost[t, r] +
                 p.hurrdam[t, r] +
                 p.extratropicalstormsdam[t, r] +
                 p.eloss_other[t,r],
@@ -63,7 +63,7 @@ function run_timestep(s::impactaggregation, t::Int)
                 p.deadcost[t, r] +
                 p.morbcost[t, r] +
                 p.wetcost[t, r] +
-                p.leavecost[t, r] +
+                p.leaveSLRcost[t, r] +
                 p.sloss_other[t,r]
 
             v.loss[t, r] = (v.eloss[t, r] + v.sloss[t, r]) * 1000000000.0

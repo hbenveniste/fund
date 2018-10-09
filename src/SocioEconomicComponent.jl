@@ -22,7 +22,10 @@
 	pgrowth = Parameter(index=[time,regions])
 	ypcgrowth = Parameter(index=[time,regions])
 	eloss = Parameter(index=[time,regions])
-	sloss = Parameter(index=[time,regions])
+    sloss = Parameter(index=[time,regions])
+    migrationcost = Parameter(index=[time,regions])
+    remittances = Parameter(index=[time,regions])
+    migdeadcost = Parameter(index=[time,regions])
 	mitigationcost = Parameter(index=[time,regions])
 	area = Parameter(index=[time,regions])
 	globalpopulation = Parameter(index=[time])
@@ -68,9 +71,9 @@ function run_timestep(s::socioeconomic, t::Int)
 
         # Calculate income
         for r in d.regions
-            oldincome = v.income[t - 1, r] - (t >= getindexfromyear(1990) && !p.runwithoutdamage ? p.consleak * p.eloss[t - 1, r] / 10.0 : 0)
+            oldincome = v.income[t - 1, r] - migrationcost[t - 1, r] - (t >= getindexfromyear(1990) && !p.runwithoutdamage ? p.consleak * p.eloss[t - 1, r] / 10.0 : 0)
 
-            v.income[t, r] = (1 + v.ygrowth[t, r]) * oldincome - p.mitigationcost[t - 1, r]
+            v.income[t, r] = (1 + v.ygrowth[t, r]) * oldincome + p.remittances[t - 1, r] - p.mitigationcost[t - 1, r]
         end
 
         # Check for unrealistic values
@@ -85,7 +88,7 @@ function run_timestep(s::socioeconomic, t::Int)
         end
 
         for r in d.regions
-            v.consumption[t, r] = max(v.income[t, r] * 1000000000.0 * (1.0 - p.savingsrate) - (p.runwithoutdamage ? 0.0 :   (p.eloss[t - 1, r] + p.sloss[t - 1, r]) * 1000000000.0),0.0)
+            v.consumption[t, r] = max(v.income[t, r] * 1000000000.0 * (1.0 - p.savingsrate) - (p.runwithoutdamage ? 0.0 :   (p.eloss[t - 1, r] + p.sloss[t - 1, r] + p.migdeadcost[t - 1, r]) * 1000000000.0),0.0)
         end
         v.globalconsumption[t] = sum(v.consumption[t,:])
 

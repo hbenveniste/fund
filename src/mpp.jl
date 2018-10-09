@@ -1,0 +1,6 @@
+using CSVFiles, DataFrames
+
+mpp_mig = DataFrame(load("MPP_mig161"))
+usyr = DataFrame(yrborn = mpp_mig[:yrborn], usyr1 = mpp_mig[:usyr1], usyr2 = mpp_mig[:usyr2], usyr3 = mpp_mig[:usyr3], usyr4 = mpp_mig[:usyr4], usyr5 = mpp_mig[:usyr5], usyr6 = mpp_mig[:usyr6], usyr7 = mpp_mig[:usyr7], usyr8 = mpp_mig[:usyr8], usyr9 = mpp_mig[:usyr9], usyr10 = mpp_mig[:usyr10], usyr11 = mpp_mig[:usyr11], usyr12 = mpp_mig[:usyr12], usyr13 = mpp_mig[:usyr13], usyr14 = mpp_mig[:usyr14], usyr15 = mpp_mig[:usyr15], usyr16 = mpp_mig[:usyr16], usyr17 = mpp_mig[:usyr17], usyr18 = mpp_mig[:usyr18], usyr19 = mpp_mig[:usyr19], usyr20 = mpp_mig[:usyr20], usyr21 = mpp_mig[:usyr21], usyr22 = mpp_mig[:usyr22], usyr23 = mpp_mig[:usyr23], usyr24 = mpp_mig[:usyr24], usyr25 = mpp_mig[:usyr25])
+usyr_s = stack(usyr, [:usyr1, :usyr2, :usyr3, :usyr4, :usyr5, :usyr6, :usyr7, :usyr8, :usyr9, :usyr10, :usyr11, :usyr12, :usyr13, :usyr14, :usyr15, :usyr16, :usyr17, :usyr18, :usyr19, :usyr20, :usyr21, :usyr22, :usyr23, :usyr24, :usyr25], :yrborn)
+usyr_s[:agefirstmig] = [usyr_s[:value][i] - usyr_s[:yrborn][i] for i in length(usyr_s[:value])]
